@@ -1,0 +1,21 @@
+{
+  "name": "derbysoft-connectivity-mcp",
+  "version": "0.1.1",
+  "description": "DerbySoft GO onboarding, certification status, connection profiles, and next steps through the GO certification MCP.",
+  "author": {
+    "name": "Raphael Rong",
+    "url": "https://github.com/raphaelrong-derbysoft"
+  },
+  "homepage": "https://github.com/raphaelrong-derbysoft/derbysoft-go-mcp#readme",
+  "repository": "https://github.com/raphaelrong-derbysoft/derbysoft-go-mcp",
+  "license": "Apache-2.0",
+  "keywords": [
+    "derbysoft",
+    "go",
+    "mcp",
+    "onboarding",
+    "certification"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}
