@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "go-certification": {
+      "type": "http",
+      "url": "https://open.travelterminal.derbysoft-test.com/mcp",
+      "headers": {
+        "X-GO-Token": "${GO_TOKEN}"
+      }
+    }
+  }
+}
