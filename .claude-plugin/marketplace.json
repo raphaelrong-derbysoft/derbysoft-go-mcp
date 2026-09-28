@@ -1,0 +1,16 @@
+{
+  "name": "derbysoft-go",
+  "owner": {
+    "name": "Raphael Rong"
+  },
+  "metadata": {
+    "description": "DerbySoft GO onboarding and certification workflows for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "derbysoft-connectivity-mcp",
+      "source": "./plugins/derbysoft-connectivity-mcp",
+      "description": "GO onboarding, certification status and next steps through the public GO certification MCP."
+    }
+  ]
+}
