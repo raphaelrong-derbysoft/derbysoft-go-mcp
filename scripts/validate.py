@@ -52,8 +52,8 @@ def main():
         expected_url = "https://open.travelterminal.derbysoft-test.com/mcp"
         require(codex_mcp["url"] == claude_mcp["url"] == expected_url, "MCP endpoints differ")
         require(codex_mcp["type"] == claude_mcp["type"] == "http", "Expected HTTP MCP")
-        require(codex_mcp["env_http_headers"] == {"X-GO-Token": "GO_TOKEN"}, "Codex must use environment auth")
-        require("http_headers" not in codex_mcp and "headers" not in codex_mcp, "Unexpected static Codex headers")
+        require(codex_mcp.get("http_headers") == {"X-GO-Token": ""}, "Codex must preset the header name with an empty key")
+        require("env_http_headers" not in codex_mcp and "headers" not in codex_mcp, "Unexpected alternate Codex auth source")
         require(claude_mcp["headers"] == {"X-GO-Token": "${GO_TOKEN}"}, "Claude must use environment auth")
         for manifest in manifests:
             skills = component(root, manifest["skills"])

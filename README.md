@@ -1,91 +1,95 @@
 # DerbySoft GO plugins
 
-通过一个 GitHub 仓库，在 **Codex** 和 **Claude Code** 中安装 DerbySoft GO 认证工作流。
+Install DerbySoft GO certification workflows in **Codex** and **Claude Code** from a single GitHub repository.
 
-- Marketplace：`derbysoft-go`
-- Plugin：`derbysoft-connectivity-mcp`
-- 版本：`0.1.1`
-- 能力：账号上下文、认证进度、连接配置、认证下一步及基于来源的 GO 接入指导。
+- Marketplace: `derbysoft-go`
+- Plugin: `derbysoft-connectivity-mcp`
+- Version: `0.1.3`
+- Capabilities: account context, certification progress, connection profiles, next steps, and source-based GO onboarding guidance.
 
-本仓库分发 GO 认证 Skill 与公网 MCP 连接，兼容两种客户端。**MCP 地址已内置；每位用户仍需提供自己的 GO API Token。** 插件从客户端进程的 `GO_TOKEN` 环境变量读取令牌，并发送为 `X-GO-Token` 请求头。
+This repository distributes a GO certification skill and a public MCP connection for both clients. **The MCP endpoint is bundled; each user configures their own GO API Token in their client.** For Codex, the `X-GO-Token` header name is preset with an empty value. Each user fills in only their own API key in their personal `go-certification` MCP configuration. No `GO_TOKEN` environment variable is required for that setup. Claude Code uses `GO_TOKEN`; Codex users can still choose an explicit environment-based personal configuration.
 
-MCP 服务：[https://open.travelterminal.derbysoft-test.com/mcp](https://open.travelterminal.derbysoft-test.com/mcp)。这是测试环境地址。仓库不包含真实令牌或旧版服务器二进制。
+MCP service: [GO certification MCP](https://open.travelterminal.derbysoft-test.com/mcp). This is a test environment endpoint. The repository contains no real tokens or legacy server binaries.
 
-这是 GitHub 自建 Marketplace 分发，不表示已经进入 OpenAI 或 Anthropic 官方公共目录。
+This is a custom marketplace distributed through GitHub. It does not imply a listing in the official OpenAI or Anthropic public directories.
 
-## 在 Codex 安装
+## Install in Codex
 
-需要支持 `codex plugin` 的 Codex 版本。在终端执行：
+Use a Codex version that supports `codex plugin`. Run these commands in your terminal:
 
 ```sh
 codex plugin marketplace add https://github.com/raphaelrong-derbysoft/derbysoft-go-mcp.git
 codex plugin add derbysoft-connectivity-mcp@derbysoft-go
 ```
 
-回到 Codex，开启新任务后使用。如果已经安装旧的 `derbysoft-connectivity-mcp@personal`，先确认新市场版本已安装，再在插件界面禁用旧版本，避免重复加载；保留原有 `go-certification` MCP 连接。
+Return to Codex and start a new task to use the plugin. If you already have the older `derbysoft-connectivity-mcp@personal` plugin installed, confirm that the version from the new marketplace is installed before disabling the old version in the plugin interface to avoid duplicate loading. Preserve your existing `go-certification` MCP connection.
 
-## 在 Claude Code 安装
+Before checking your account, follow [Configure your API key in Codex](plugins/derbysoft-connectivity-mcp/skills/go-concept-retrieval/references/connection-setup.md#codex-configure-your-api-key-in-codex). Each user saves their own key in their user-level Codex configuration. The shared plugin contains no user credentials, and plugin upgrades do not overwrite those personal settings.
 
-在 Claude Code 对话中执行：
+## Install in Claude Code
+
+Run these commands in a Claude Code conversation:
 
 ```text
 /plugin marketplace add raphaelrong-derbysoft/derbysoft-go-mcp
 /plugin install derbysoft-connectivity-mcp@derbysoft-go
 ```
 
-或者在终端执行：
+Alternatively, run these commands in your terminal:
 
 ```sh
 claude plugin marketplace add raphaelrong-derbysoft/derbysoft-go-mcp
 claude plugin install derbysoft-connectivity-mcp@derbysoft-go
 ```
 
-重新开启会话后，直接描述 GO 问题，或调用 `/derbysoft-connectivity-mcp:go-concept-retrieval`。
+Start a new session, then describe your GO question or invoke `/derbysoft-connectivity-mcp:go-concept-retrieval`.
 
-## 首次连接与使用
+## First connection and usage
 
-按 [连接说明](plugins/derbysoft-connectivity-mcp/skills/go-concept-retrieval/references/connection-setup.md) 向启动客户端的环境提供 `GO_TOKEN`，然后开启新会话。MCP 地址无需填写。令牌由 GO 服务管理员提供，插件安装不授予账号访问权。已有独立认证连接的用户可以继续复用；插件连接不会自动继承它的请求头。
+Follow the [connection setup guide](plugins/derbysoft-connectivity-mcp/skills/go-concept-retrieval/references/connection-setup.md) for your client. Obtain your personal API key from the GO service administrator; installing the plugin does not grant account access. In Codex, use the exact server name `go-certification` for your user-level settings so they take precedence over the bundled server definition. If you already have a working connection, keep its credentials rather than creating a duplicate.
 
-可以询问：
+After saving your Codex settings, use the MCP reload or restart control available in your client and follow any restart prompt. Start a new task to pick up updated plugin skills. Saving a key in Codex configuration avoids the need to restart solely to inherit a new environment variable; it does not guarantee that every client version refreshes its tools without a restart. The plugin does not provide an automatic API-key prompt during installation.
 
-- “检查我的 GO 认证进度，并说明下一步。”
-- “展示我的 GO connection profile。”
-- “根据当前认证状态，解释我还缺哪些条件。”
+Example prompts:
 
-Skill 会先读取 `get_my_context`，需要时查询 `get_run_status` 或 `get_connection_profile`。仅询问状态不会触发认证提交；执行认证操作时遵循服务的能力声明与确认要求。
+- "Check my GO certification progress and explain the next steps."
+- "Show my GO connection profile."
+- "Based on my current certification status, explain which requirements I still need to meet."
 
-## 更新
+The skill calls `get_my_context` first, then queries `get_run_status` or `get_connection_profile` when needed. Status questions do not trigger certification submissions. Certification actions follow the service's declared capabilities and confirmation requirements.
 
-Codex 刷新市场后重新安装该插件以拉取新版本：
+## Update
+
+In Codex, refresh the marketplace and reinstall the plugin to get the new version:
 
 ```sh
 codex plugin marketplace upgrade derbysoft-go
 codex plugin add derbysoft-connectivity-mcp@derbysoft-go
 ```
 
-Claude Code：
+In Claude Code:
 
 ```sh
 claude plugin marketplace update derbysoft-go
 claude plugin update derbysoft-connectivity-mcp@derbysoft-go
 ```
 
-更新后开启新会话。
+Start a new session after updating.
 
-## 目录与维护
+## Repository structure and maintenance
 
 ```text
-.agents/plugins/marketplace.json          Codex 市场索引
-.claude-plugin/marketplace.json           Claude Code 市场索引
+.agents/plugins/marketplace.json          Codex marketplace index
+.claude-plugin/marketplace.json           Claude Code marketplace index
 plugins/derbysoft-connectivity-mcp/
-  .codex-plugin/plugin.json               Codex 插件清单
-  .claude-plugin/plugin.json              Claude Code 插件清单
-  .mcp.json                               Claude MCP 与环境变量请求头
-  skills/go-concept-retrieval/            两端共享的认证 Skill 和配置说明
-scripts/validate.py                      市场及插件文件检查（Python 3）
+  .codex-plugin/plugin.json               Codex plugin manifest
+  .claude-plugin/plugin.json              Claude Code plugin manifest
+  .mcp.json                               Claude MCP configuration and environment-based headers
+  skills/go-concept-retrieval/            Shared certification skill and connection setup guide
+scripts/validate.py                      Marketplace and plugin validation (Python 3)
 ```
 
-维护时修改共享 Skill，并同步增加两份插件清单中的版本号。验证后将改动推送到 GitHub：
+When updating the shared skill, increment the version in both plugin manifests together. Validate the changes before pushing them to GitHub:
 
 ```sh
 python3 scripts/validate.py
@@ -93,11 +97,11 @@ claude plugin validate .
 claude plugin validate plugins/derbysoft-connectivity-mcp
 ```
 
-Codex 清单中的 `mcpServers` 使用 `env_http_headers`；Claude 的 `.mcp.json` 使用 `${GO_TOKEN}`。两份配置连接相同地址，按客户端各自支持的语法读取同一环境变量。
+The Codex manifest supplies `http_headers: {"X-GO-Token": ""}` so the header name is preset without distributing a credential. Each user's same-name `go-certification` configuration supplies the actual value and takes precedence over that bundled definition. Users upgrading from the bundled environment-based setup must use the explicit environment configuration in the connection guide if they want to keep using `GO_TOKEN`. Claude's `.mcp.json` uses `${GO_TOKEN}`. Both clients connect to the same endpoint and authenticate with the `X-GO-Token` header. Keep all real API keys out of distributed plugin files.
 
-仓库内的自动检查会检查市场条目、文件路径、版本一致性、MCP 地址与令牌引用及安装包边界。实际账号连通性需要在具备 GO 服务访问权限的客户端中验证。
+The repository's automated checks validate marketplace entries, file paths, version consistency, MCP endpoints, token references, and package boundaries. Actual account connectivity must be verified in a client with access to the GO service.
 
-参考：[OpenAI 插件与 Marketplace](https://developers.openai.com/plugins/build/plugins)、[Claude Code Marketplace](https://code.claude.com/docs/en/plugin-marketplaces)。
+References: [OpenAI plugins and marketplaces](https://developers.openai.com/plugins/build/plugins), [Claude Code marketplaces](https://code.claude.com/docs/en/plugin-marketplaces).
 
 ## License
 
