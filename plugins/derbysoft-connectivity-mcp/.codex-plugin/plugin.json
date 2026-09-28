@@ -1,6 +1,6 @@
 {
   "name": "derbysoft-connectivity-mcp",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "DerbySoft GO onboarding, certification status, connection profiles, and next steps through the GO certification MCP.",
   "author": {
     "name": "Raphael Rong",
@@ -20,7 +20,7 @@
   "interface": {
     "displayName": "DerbySoft Connectivity",
     "shortDescription": "GO onboarding, certification status and next steps.",
-    "longDescription": "Connect to the public GO certification MCP for account context, run status and connection profiles. Configure your own GO API key as the X-GO-Token HTTP header in your personal Codex MCP settings. GO_TOKEN remains available for environment-based setups.",
+    "longDescription": "Connect to the public GO certification MCP for account context, run status and connection profiles. The X-GO-Token header name is preset. Fill in your own GO API key in your personal Codex MCP settings.",
     "developerName": "Raphael Rong",
     "category": "Productivity",
     "capabilities": [
@@ -38,8 +38,8 @@
     "go-certification": {
       "type": "http",
       "url": "https://open.travelterminal.derbysoft-test.com/mcp",
-      "env_http_headers": {
-        "X-GO-Token": "GO_TOKEN"
+      "http_headers": {
+        "X-GO-Token": ""
       }
     }
   }

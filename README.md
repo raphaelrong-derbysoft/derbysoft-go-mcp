@@ -4,10 +4,10 @@ Install DerbySoft GO certification workflows in **Codex** and **Claude Code** fr
 
 - Marketplace: `derbysoft-go`
 - Plugin: `derbysoft-connectivity-mcp`
-- Version: `0.1.2`
+- Version: `0.1.3`
 - Capabilities: account context, certification progress, connection profiles, next steps, and source-based GO onboarding guidance.
 
-This repository distributes a GO certification skill and a public MCP connection for both clients. **The MCP endpoint is bundled; each user configures their own GO API Token in their client.** For Codex, the recommended setup is a personal `go-certification` MCP configuration with an `X-GO-Token` HTTP header. No `GO_TOKEN` environment variable is required for that setup. Claude Code and existing environment-based Codex setups can continue using `GO_TOKEN`.
+This repository distributes a GO certification skill and a public MCP connection for both clients. **The MCP endpoint is bundled; each user configures their own GO API Token in their client.** For Codex, the `X-GO-Token` header name is preset with an empty value. Each user fills in only their own API key in their personal `go-certification` MCP configuration. No `GO_TOKEN` environment variable is required for that setup. Claude Code uses `GO_TOKEN`; Codex users can still choose an explicit environment-based personal configuration.
 
 MCP service: [GO certification MCP](https://open.travelterminal.derbysoft-test.com/mcp). This is a test environment endpoint. The repository contains no real tokens or legacy server binaries.
 
@@ -97,7 +97,7 @@ claude plugin validate .
 claude plugin validate plugins/derbysoft-connectivity-mcp
 ```
 
-The Codex manifest retains `env_http_headers` as a fallback for existing environment-based setups. The recommended user-level `go-certification` configuration supplies `http_headers` and takes precedence over that bundled definition. Claude's `.mcp.json` uses `${GO_TOKEN}`. Both clients connect to the same endpoint and authenticate with the `X-GO-Token` header. Keep all real API keys out of distributed plugin files.
+The Codex manifest supplies `http_headers: {"X-GO-Token": ""}` so the header name is preset without distributing a credential. Each user's same-name `go-certification` configuration supplies the actual value and takes precedence over that bundled definition. Users upgrading from the bundled environment-based setup must use the explicit environment configuration in the connection guide if they want to keep using `GO_TOKEN`. Claude's `.mcp.json` uses `${GO_TOKEN}`. Both clients connect to the same endpoint and authenticate with the `X-GO-Token` header. Keep all real API keys out of distributed plugin files.
 
 The repository's automated checks validate marketplace entries, file paths, version consistency, MCP endpoints, token references, and package boundaries. Actual account connectivity must be verified in a client with access to the GO service.
 

@@ -6,18 +6,20 @@ Each user keeps their own credentials in their client. Never put a real key in t
 
 ## Codex: configure your API key in Codex
 
-The recommended setup stores the key in your user-level Codex MCP configuration. It does not require a `GO_TOKEN` environment variable or an operating-system-specific credential helper.
+The plugin presets the header name `X-GO-Token` with an empty value. Users only need to fill in the API-key value; they do not need to choose a header name. The recommended setup stores that value in your user-level Codex MCP configuration. It does not require a `GO_TOKEN` environment variable or an operating-system-specific credential helper.
 
 1. Install `derbysoft-connectivity-mcp@derbysoft-go`.
 2. Open your user-level Codex configuration file, `~/.codex/config.toml` (or `config.toml` inside your custom Codex home directory). If your Codex client exposes custom HTTP header fields under **Settings > MCP servers**, you can enter the same values there.
-3. Add the following server section, replacing the placeholder with your personal key **locally**. If `[mcp_servers.go-certification]` already exists, edit that section rather than adding a duplicate. Keep an existing working authentication setup unless you intend to change it.
+3. Fill the empty `X-GO-Token` value with your personal key **locally**. If the personal server section does not yet contain the header, copy the complete template below and fill the empty string. If `[mcp_servers.go-certification]` already exists, edit that section rather than adding a duplicate. Keep an existing working authentication setup unless you intend to change it.
 
 ```toml
 [mcp_servers.go-certification]
 url = "https://open.travelterminal.derbysoft-test.com/mcp"
 enabled = true
-http_headers = { "X-GO-Token" = "YOUR_GO_API_KEY" }
+http_headers = { "X-GO-Token" = "" }
 ```
+
+The empty string is intentional: it is a preset field, not a working key. The plugin declares the default field but cannot guarantee that every Codex settings screen renders plugin-provided headers as editable inputs. If the field is not shown, use the personal configuration template above. A pre-existing user-level server overrides the bundled definition, so add this header there if it is absent.
 
 Use the exact name `go-certification`. A user-defined server with this name takes precedence over the plugin's bundled server definition. Include the URL as shown; do not rely on the user configuration being merged field by field with the plugin definition.
 
@@ -35,7 +37,7 @@ To rotate your key, replace the local `X-GO-Token` value and reload the MCP conn
 
 ### Optional: retain environment-based authentication
 
-Existing Codex users who already supply `GO_TOKEN` can keep that setup. The bundled server definition still supports it. An explicit user-level configuration for this alternative is:
+Codex users who already supply `GO_TOKEN` can keep that setup by using the explicit personal configuration below. Starting with version 0.1.3, the bundled definition presets an empty direct header instead of an environment mapping; users who previously relied only on the bundled mapping must add this personal configuration to continue using their environment variable:
 
 ```toml
 [mcp_servers.go-certification]
@@ -74,7 +76,7 @@ Use `/mcp` to inspect the connection status. Do not edit the installed plugin to
 
 ## Verify account access
 
-In Codex, `codex mcp get go-certification` shows the effective configuration with header values masked. A direct-key setup should show `http_headers: X-GO-Token=*****`; it does not need `env_http_headers`. This confirms configuration, not whether the key is valid.
+In Codex, `codex mcp get go-certification` shows the effective configuration with header values masked. A direct-key setup should show `http_headers: X-GO-Token=*****`; it does not need `env_http_headers`. Codex also masks an empty value, so this display does not prove that a key has been entered or that it is valid. Confirm locally that the value is non-empty without displaying it in chat.
 
 Start a new task or session and ask: "Check my GO certification status and next steps." The client should discover and call `get_my_context`. A successful call confirms account access. `initialize` and `tools/list` work without a token, so seeing the tools alone does not prove authentication.
 
