@@ -1,6 +1,6 @@
 {
   "name": "derbysoft-connectivity-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "DerbySoft GO onboarding, certification status, connection profiles, and next steps through the GO certification MCP.",
   "author": {
     "name": "Raphael Rong",
